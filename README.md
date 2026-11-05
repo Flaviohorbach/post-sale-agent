@@ -4,6 +4,8 @@ Three AI agents and one person resolve "my order is late" for a store. Agents cl
 
 Project 8 of a 12-project AI engineering track focused on front-end. Orders come from [project 7's MCP server](https://github.com/Flaviohorbach/mcp-ecommerce-server). The interface is in Portuguese. All people and orders are fake, and no action is real.
 
+**[Live demo](https://post-sale-agent.vercel.app)**
+
 ## How a case runs
 
 ```mermaid
