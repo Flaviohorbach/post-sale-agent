@@ -1,6 +1,6 @@
 import { Annotation, END, interrupt, START, StateGraph, type BaseCheckpointSaver } from "@langchain/langgraph";
 import type { Agents, Triage } from "./agents";
-import { checkProposal, computeFacts, escalationMessage, needsHumanApproval, REFUND_APPROVAL_LIMIT_BRL, type Action, type Facts, type Order, type Proposal } from "./policy";
+import { checkProposal, computeFacts, escalationMessage, formatBRL, needsHumanApproval, REFUND_APPROVAL_LIMIT_BRL, type Action, type Facts, type Order, type Proposal } from "./policy";
 import type { Store } from "./store";
 
 export type EventActor = "loja" | "triagem" | "politica" | "resolucao" | "revisor" | "humano" | "execucao";
@@ -72,7 +72,7 @@ export function buildGraph({ agents, store, ledger, checkpointer }: GraphDeps) {
   const loadOrder = async (state: State): Promise<Partial<State>> => {
     const order = await store.getOrder(state.orderId);
     const event: CaseEvent = order
-      ? { actor: "loja", title: `Pedido consultado pelo MCP: ${order.statusLabel}`, detail: `${order.items.map((i) => i.name).join(", ")}. Total de R$ ${order.totalBRL.toFixed(2)}.`, data: order, modelCalls: 0 }
+      ? { actor: "loja", title: `Pedido consultado pelo MCP: ${order.statusLabel}`, detail: `${order.items.map((i) => i.name).join(", ")}. Total de ${formatBRL(order.totalBRL)}.`, data: order, modelCalls: 0 }
       : { actor: "loja", title: "Pedido não encontrado", detail: state.orderId, modelCalls: 0 };
     return { order, events: [event] };
   };
@@ -144,7 +144,7 @@ export function buildGraph({ agents, store, ledger, checkpointer }: GraphDeps) {
 
     const note = decision.note?.trim() ? decision.note.trim() : undefined;
     if (decision.approved) {
-      return { events: [{ actor: "humano", title: `Reembolso de R$ ${order!.totalBRL.toFixed(2)} aprovado`, detail: note, modelCalls: 0 }] };
+      return { events: [{ actor: "humano", title: `Reembolso de ${formatBRL(order!.totalBRL)} aprovado`, detail: note, modelCalls: 0 }] };
     }
     return {
       proposal: { action: "escalate", reason: note ?? "Reembolso recusado na aprovação humana.", customerMessage: escalationMessage(order!), stockChecks: [] },
@@ -159,7 +159,7 @@ export function buildGraph({ agents, store, ledger, checkpointer }: GraphDeps) {
     const newlyExecuted = await ledger.record(state.caseId, action, amountBRL);
     return {
       outcome: { action, amountBRL, customerMessage, newlyExecuted },
-      events: [{ actor: "execucao", title: newlyExecuted ? `Ação registrada: ${action}` : `Ação ${action} já estava registrada; nada foi repetido`, detail: amountBRL === null ? undefined : `R$ ${amountBRL.toFixed(2)}`, modelCalls: 0 }],
+      events: [{ actor: "execucao", title: newlyExecuted ? `Ação registrada: ${action}` : `Ação ${action} já estava registrada; nada foi repetido`, detail: amountBRL === null ? undefined : formatBRL(amountBRL), modelCalls: 0 }],
     };
   };
 

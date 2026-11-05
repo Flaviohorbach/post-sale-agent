@@ -75,6 +75,7 @@ export interface Proposal {
 }
 
 const brl = (value: number) => value.toFixed(2).replace(".", ",");
+export const formatBRL = (value: number) => `R$ ${brl(value)}`;
 
 /** Every amount in the message must be one this order really has. A model may round, convert or invent. */
 function ungroundedAmounts(message: string, order: Order): string[] {
