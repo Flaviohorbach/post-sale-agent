@@ -33,6 +33,6 @@ const samples = CHOSEN.flatMap((id) => {
 });
 
 // Some runs were recorded before the record switched to the Brazilian amount format.
-const json = JSON.stringify(samples, null, 1).replace(/R\$ (\d+)\.(\d{2})/g, "R$ $1,$2");
+const json = JSON.stringify(samples, null, 1).replace(/R\$ (\d+)\.(\d{2})(?!\d)/g, "R$ $1,$2").replace(/R\$ (\d{1,3})(\d{3}),(\d{2})/g, "R$ $1.$2,$3");
 writeFileSync("src/data/sample-runs.json", json + "\n");
 console.log(`${samples.length} examples written`);

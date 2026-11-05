@@ -75,7 +75,7 @@ export interface Proposal {
 }
 
 const brl = (value: number) => value.toFixed(2).replace(".", ",");
-export const formatBRL = (value: number) => `R$ ${brl(value)}`;
+export const formatBRL = (value: number) => `R$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 /** Every amount in the message must be one this order really has. A model may round, convert or invent. */
 function ungroundedAmounts(message: string, order: Order): string[] {

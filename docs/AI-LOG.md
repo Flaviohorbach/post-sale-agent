@@ -16,7 +16,7 @@ The first screen test hung on "Compiling", and the agent spent time removing the
 
 ### 4. Amounts in the wrong format
 
-The record said "R$ 714.90", in a page where every other amount says "R$ 714,90". **Caught by:** reading the screen after the first real run. **Fix:** one shared formatter.
+The record said "R$ 714.90", in a page where every other amount says "R$ 714,90". **Caught by:** reading the screen after the first real run. **Fix:** one shared formatter. That fix had its own bug: the cleanup for recorded examples turned a customer's "R$ 5.000,00" into "R$ 5,000,00", and the formatter left "R$ 10999,90" without a thousands separator. **Caught by:** reading the live demo and listing every amount in the examples. **Fix:** a stricter pattern and grouped thousands.
 
 ### 5. A perfect score over an invented fact
 
