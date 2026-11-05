@@ -35,6 +35,18 @@ A complaint is text written by a stranger, and text can talk a model into anythi
 - **Amounts in the message must exist in the order,** and a message cannot claim a refund unless that is the action.
 - **Two tries, then a person.** Neither agent can loop forever or force an answer through.
 
+## Does it work?
+
+12 of 12 complaints pass ([cases](eval/cases.json), [answers](eval/results.json)), with real models and the live MCP server, at an average of **3.7 model calls per case**. Fixed rules check the action, whether the case paused and what the message says. The cases were written before the first run, and they include two prompt injections and a customer demanding R$ 5,000.
+
+**The score hides what reading the answers shows:**
+
+- **The first run invented a fact.** Asked about another color, the agent said the frying pan does not come in other colors, with no data on colors. The rules could not see it, and the reviewer approved it. It still scored as a pass, because no rule looked for that. I added an instruction and a rule for this case and reran only it, so the 12 of 12 includes one fix made after seeing the result.
+- **The reviewer did not earn its cost in this run.** It sent back 1 proposal in 12, and that one was arguably wrong: a customer who said "no rush" got escalated, at 2 extra model calls. It also approved the invented fact. The rules in code barred nothing either. One run is thin evidence, but the honest next step would be to measure the pipeline without the reviewer.
+- **Small promises slip through.** One message promises a new tracking code soon, and another says a canceled order was "not processed". Neither comes from the data.
+
+A refund above the limit shows the customer's message before approval, already written as done. It is only sent if a person approves. A refusal replaces it with a message from code.
+
 ## Built for failure
 
 - **Pausing survives anything.** A paused case lives in Postgres, so approval can arrive days later on another server instance. [A test](tests/persistence.test.ts) proves it with two instances that share only a database, using the production checkpointer over the real Postgres protocol.

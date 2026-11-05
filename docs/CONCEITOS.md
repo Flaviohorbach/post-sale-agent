@@ -40,6 +40,8 @@ O caso é um grafo em `src/agent/graph.ts`: pedido, triagem, política, resoluç
 
 **Quando vale a pena?** Separar papéis dá prompts menores e menos ferramentas por agente. O custo é claro: cada papel é mais uma chamada. Se o revisor quase nunca reprovar, ele é só gasto. O campo `attempts` em `eval/results.json` mede isso.
 
+**O que os números disseram aqui:** média de 3,7 chamadas por caso. O revisor devolveu 1 proposta em 12, e essa devolução foi discutível. Ele também aprovou uma invenção (a frigideira "não tem outras cores"), que só apareceu quando li as respostas. Uma rodada é pouca evidência, mas mostra por que "mais agentes" não é sinônimo de "mais qualidade". Numa entrevista, isso vale mais do que dizer que usou multiagente.
+
 ## 5. O modelo propõe, o código decide
 
 Esta é a ideia central do projeto. **Regra de negócio não fica em prompt**, porque texto pode convencer um modelo de qualquer coisa.

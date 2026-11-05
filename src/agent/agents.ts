@@ -122,6 +122,7 @@ ${SHARED_RULES}`,
 - refund: reembolsar o valor total do pedido. O sistema calcula o valor e cuida de aprovações.
 - reship: reenviar. Só escolha depois de confirmar estoque de cada item: use search_products para achar o skuId e check_inventory para ver as unidades.
 Prefira reship a refund quando há estoque, porque o cliente ainda quer o produto. Não prometa nada além da ação escolhida.
+Você só sabe o que está nos dados. Se o cliente perguntar algo que os dados não respondem, como cores ou características de um produto, não responda com suposições: escolha escalate e diga que um atendente vai ajudar.
 ${SHARED_RULES}`,
         prompt: data({ pedido: order, mensagemDoCliente: message, triagem: triage, fatosDoSistema: facts, correcaoDoRevisor: feedback }),
       });
